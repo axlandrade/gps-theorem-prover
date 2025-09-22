@@ -1,0 +1,24 @@
+{
+    "name": "GPS Theorem Prover (Python 3.12)",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.linting.pylintEnabled": true,
+                "python.formatting.provider": "black",
+                "editor.formatOnSave": true
+            },
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-python.isort"
+            ]
+        }
+    },
+    // A imagem da Microsoft já cria um usuário chamado 'vscode'.
+    "remoteUser": "vscode"
+}
