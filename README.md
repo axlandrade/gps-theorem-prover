@@ -1,7 +1,7 @@
 # GPS Theorem Prover
 
 [![License: MIT](https://shields.io/badge/License-MIT-e0dd52?style=flat)](https://github.com/axlandrade/gps-theorem-prover/blob/main/LICENSE)
-[![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)][[linkedin-url](https://www.linkedin.com/in/axl-andrade-084a7820a/)]
+[![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/axl-andrade-084a7820a/)
 
 A Python implementation of the classic General Problem Solver (GPS) algorithm, tailored to prove theorems in propositional logic. This is an educational project inspired by Newell & Simon's original work and the book "Artificial Intelligence: A Modern Approach".
 
