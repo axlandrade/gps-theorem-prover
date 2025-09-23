@@ -45,6 +45,12 @@ class Not(LogicalExpression):
     # --- Not class test --- #
 
 
+class And(LogicalExpression):
+    """
+    Represents the conjunction of two Logical Expressions (e.g., P ^ Q)
+    """
+
+
 def test():
     p = Variable('P')
     q = Variable('Q')
