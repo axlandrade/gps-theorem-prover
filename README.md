@@ -3,65 +3,162 @@
 [![License: MIT](https://shields.io/badge/License-MIT-e0dd52?style=flat)](https://github.com/axlandrade/gps-theorem-prover/blob/main/LICENSE)
 [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/axl-andrade-084a7820a/)
 
-A Python implementation of the classic General Problem Solver (GPS) algorithm, tailored to prove theorems in propositional logic. This is an educational project inspired by Newell & Simon's original work and the book "Artificial Intelligence: A Modern Approach".
+A Python theorem prover inspired by the classic General Problem Solver (GPS).
 
-## About The Project
+The project has two layers:
 
-The General Problem Solver (GPS) is one of the most iconic programs in the history of Artificial Intelligence. Developed in 1959 by Herbert A. Simon, J. C. Shaw, and Allen Newell, it was the first program to separate its problem-solving strategy from its knowledge of specific problems.
+- `logic.py`: a GPS-style prover for propositional logic.
+- `real_analysis.py`: an educational prover for real-analysis theorem schemas, including limits, continuity, and derivatives of symbolic real expressions.
 
-This project aims to replicate the core logic of GPS, **Means-Ends Analysis**, to solve problems in a symbolic domain: proving formal logic theorems. Instead of navigating a physical world, our GPS will navigate a world of logical expressions, using rules of inference as its operators to reach a goal theorem from a set of given axioms.
-
-This is a hands-on exercise to explore the foundations of symbolic AI and automated reasoning.
+The goal is to generate readable proof steps, not just a final boolean answer.
 
 ## Features
 
--   **Object-Oriented Logic:** Clean and extensible representation of logical expressions (`Variables`, `Not`, `And`, `Or`, `Implies`).
--   **GPS Engine:** A core solver that implements the recursive Means-Ends Analysis algorithm.
--   **Symbolic Operators:** Logical rules of inference (e.g., Modus Ponens, De Morgan's Laws) are treated as operators to reduce differences between states.
--   **Proof Generation:** The final output is a step-by-step plan that constitutes a formal proof of the target theorem.
+- Immutable symbolic expressions for propositional logic:
+  `Variable`, `Not`, `And`, `Or`, and `Implies`.
+- Recursive means-ends proof search for inference rules such as:
+  Modus Ponens, conjunction introduction/elimination, disjunction introduction,
+  double negation, and De Morgan laws.
+- Symbolic real expressions:
+  constants, identity variables, named functions, sums, differences, products,
+  quotients, and integer powers.
+- Real-analysis proof generation for:
+  limits, continuity at a point, and symbolic derivatives.
+- Exact rational arithmetic via Python's `fractions.Fraction`.
+- Dependency-free test suite using `unittest`.
+- Optional Docker execution for reproducible tests.
 
-## Getting Started
+## Requirements
 
-This project is configured to run inside a fully containerized development environment using VS Code and Docker.
+- Python 3.12 or newer
+- Docker, optional
 
-### Prerequisites
+## Quick Start
 
--   [Docker](https://www.docker.com/get-started)
--   [Visual Studio Code](https://code.visualstudio.com/)
--   [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) for VS Code.
+Run the propositional logic demo:
 
-### Installation
+```sh
+python logic.py
+```
 
-1.  Clone the repository:
-    ```sh
-     git clone [https://github.com/axlandrade/gps-theorem-prover](https://github.com/axlandrade/gps-theorem-prover)
-    ```
-2.  Change into the project directory:
-    ```sh
-    cd gps-theorem-prover
-    ```
-3.  Open the folder in VS Code.
-4.  VS Code will automatically detect the `.devcontainer` configuration and prompt you to **"Reopen in Container"**. Click it.
+Run the real-analysis demo:
 
-That's it! The dev container will build, and all dependencies and VS Code extensions specified in `devcontainer.json` will be automatically installed and configured for you.
+```sh
+python real_analysis.py
+```
 
-## Usage
+Run all tests:
 
-The core of the project is the ability to represent complex logical expressions in an intuitive way.
+```sh
+python -m unittest discover -v
+```
 
-For example, to create the expression `(¬P ∧ Q)`:
+Or run the tests in Docker:
+
+```sh
+docker build -t gps-theorem-prover .
+docker run --rm gps-theorem-prover
+```
+
+## Propositional Logic Example
 
 ```python
-from logic import Variable, Not, And
+from logic import Variable, format_proof, prove
 
-# 1. Define the propositional variables
-p = Variable('P')
-q = Variable('Q')
+p = Variable("P")
+q = Variable("Q")
 
-# 2. Build the complex expression
-not_p = Not(p)
-expression = And(not_p, q)
+proof = prove([p, p >> q], q)
+print(format_proof(proof))
+```
 
-# 3. The object representation is easy to print and debug
-print(expression)
-# Expected output: (¬(P) ∧ Q)
+Output:
+
+```text
+1. P    [Axiom]
+2. (P -> Q)    [Axiom]
+3. Q    [Modus Ponens: P, (P -> Q)]
+```
+
+## Real Analysis Examples
+
+### Limit of a Polynomial
+
+```python
+from real_analysis import Variable, format_analysis_proof, prove_limit
+
+x = Variable("x")
+expression = x**2 + 3 * x + 2
+
+proof = prove_limit(expression, point=1, expected_value=6)
+print(format_analysis_proof(proof))
+```
+
+This proves:
+
+```text
+lim_{x->1} (((x^2) + (3 * x)) + 2) = 6
+```
+
+### Continuity
+
+```python
+from real_analysis import Variable, format_analysis_proof, prove_continuity
+
+x = Variable("x")
+proof = prove_continuity(x**3 - 2 * x + 7, point=3)
+print(format_analysis_proof(proof))
+```
+
+### Derivative
+
+```python
+from real_analysis import Variable, format_analysis_proof, prove_derivative
+
+x = Variable("x")
+proof = prove_derivative(x**2 + 3 * x + 2, expected_derivative=2 * x + 3)
+print(format_analysis_proof(proof))
+```
+
+This proves:
+
+```text
+d/dx (((x^2) + (3 * x)) + 2) = ((2 * x) + 3)
+```
+
+### Assumptions for Named Functions
+
+Named functions are intentionally uninterpreted. Provide assumptions when the
+prover needs facts about them:
+
+```python
+from real_analysis import Limit, NamedFunction, prove_limit
+
+f = NamedFunction("f")
+assumption = Limit(f, "x", 2, 5)
+
+proof = prove_limit(f + 1, point=2, expected_value=6, assumptions=[assumption])
+```
+
+## Project Structure
+
+```text
+.
+├── logic.py
+├── real_analysis.py
+├── tests/
+│   ├── test_logic.py
+│   └── test_real_analysis.py
+├── Dockerfile
+├── pyproject.toml
+└── README.md
+```
+
+## Scope
+
+This is an educational symbolic prover. It proves a meaningful fragment of
+propositional logic and real-analysis theorem schemas, while keeping the code
+small enough to study and extend.
+
+Natural next extensions include trigonometric/exponential functions, epsilon-
+delta proof objects, theorem parsing, and a Lean export backend.
